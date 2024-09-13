@@ -1,0 +1,67 @@
+package com.gaurang.Food.Ordering.controller;
+
+import com.gaurang.Food.Ordering.dto.RestaurantDto;
+import com.gaurang.Food.Ordering.model.Restaurant;
+import com.gaurang.Food.Ordering.model.User;
+import com.gaurang.Food.Ordering.service.RestaurantService;
+import com.gaurang.Food.Ordering.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/restaurants")
+public class RestaurantController {
+
+    @Autowired
+    private RestaurantService restaurantService;
+
+    @Autowired
+    private UserService userService;
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Restaurant>> findRestaurantByName(
+            @RequestParam String keyword) {
+        List<Restaurant> restaurant = restaurantService.searchRestaurant(keyword);
+
+        return ResponseEntity.ok(restaurant);
+    }
+
+
+    @GetMapping()
+    public ResponseEntity<List<Restaurant>> getAllRestaurants() throws Exception {
+
+        List<Restaurant> restaurants = restaurantService.getAllRestaurant();
+
+
+        return ResponseEntity.ok(restaurants);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Restaurant> findRestaurantById(
+            @PathVariable Long id) throws Exception {
+
+        Restaurant restaurant = restaurantService.findRestaurantById(id);
+        return ResponseEntity.ok(restaurant);
+
+    }
+
+    @PutMapping("/{id}/add-favorites")
+    public ResponseEntity<RestaurantDto> addToFavorite(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long id) throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+        RestaurantDto restaurant = restaurantService.addToFavourites(id, user);
+        return ResponseEntity.ok(restaurant);
+
+    }
+
+
+
+
+}

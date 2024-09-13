@@ -1,0 +1,8 @@
+li{
+    list-style: none;
+}
+.logo:hover{
+    transition: 90ms;
+    transform: scale(1.0345);
+    color: yellow;
+}
